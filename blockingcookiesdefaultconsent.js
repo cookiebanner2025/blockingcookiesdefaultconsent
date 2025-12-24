@@ -108,7 +108,8 @@
     const ANALYTICS_DATA = {
         domains: [
             // Google Analytics
-            "google-analytics.com", "www.google-analytics.com", "analytics.google.com",
+          "google-analytics.com", "www.google-analytics.com", "googletagmanager.com",
+            "www.googletagmanager.com", "analytics.google.com",
             // Microsoft Clarity
             "clarity.ms", "www.clarity.ms",
             // Hotjar
