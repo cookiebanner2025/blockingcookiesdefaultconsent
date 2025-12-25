@@ -3143,7 +3143,7 @@ function injectConsentHTML(detectedCookies, language = 'en') {
     /* When restricting clicks, make overlay block clicks */
     .cookie-blur-overlay.block-clicks {
         pointer-events: auto;
-        cursor: default;  <-- CHANGED TO "default"
+        cursor: default; 
     }
     
     /* When preventing scroll */
