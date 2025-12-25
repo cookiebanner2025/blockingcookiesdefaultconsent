@@ -728,7 +728,6 @@ clarityConfig: {
         
         showFloatingButton: true,
         floatingButtonPosition: 'left',
-        adminButtonPosition: 'left',
         bannerPosition: 'left',
 
        
@@ -887,20 +886,7 @@ geoConfig: {
         }
     },
     
-    // Admin button styling
-    adminButtonStyle: {
-        size: '60px',
-        background: '#2ecc71',
-        iconColor: '#ffffff',
-        border: '2px solid #ffffff',
-        borderRadius: '50%',
-        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
-        hover: {
-            background: '#2980b9',
-            transform: 'translateY(-3px) scale(1.05)',
-            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3)'
-        }
-    },
+
     
     // Modal styling
     modalStyle: {
@@ -4938,10 +4924,6 @@ if (typeof window !== 'undefined') {
 
 
 
-/* ============================================================
-   ADMIN CONTROL FUNCTIONS
-   You can call these from browser console to control blocking
-============================================================ */
 
 // 1. Function to temporarily disable blocking (for testing)
 window.disableBlocking = function() {
