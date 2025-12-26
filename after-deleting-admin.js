@@ -780,6 +780,14 @@ window.COOKIE_SETTINGS = {
             if (DEBUG) console.log("✅ Cookie cleanup completed (10 cycles)");
         }
     }, 1000);
+
+
+   // ADD: Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    clearInterval(cookieCleanupInterval);
+    iframeObserver.disconnect();
+});
+   
     
     // 7. Block inline tracking scripts - IMPROVED DETECTION
     function blockInlineTrackers() {
@@ -831,7 +839,30 @@ window.COOKIE_SETTINGS = {
         console.log("Performance allowed:", getCategoryConsent('performance') ? "✅ YES" : "❌ NO");
         console.log("========================================");
     }
-    
+
+
+    /* ===================== CLEANUP SYSTEM ===================== */
+    // FIX: Clean up event listeners and observers
+    let cleanupFunctions = [];
+
+    function addCleanup(fn) {
+        cleanupFunctions.push(fn);
+    }
+
+    // Call this when banner is dismissed
+    function cleanup() {
+        iframeObserver.disconnect();
+        cleanupFunctions.forEach(fn => fn());
+        cleanupFunctions = [];
+        
+        // Clean up mutation observers
+        document.querySelectorAll('script[data-cookie-observer]').forEach(script => {
+            script.parentNode.removeChild(script);
+        });
+    }
+
+
+   
     /* ===================== BANNER HOOKS ===================== */
     
     window.enableAllTracking = function() {
@@ -4635,6 +4666,10 @@ function acceptAllCookies() {
     disableInteractionRestrictions();
     
     console.log("✅ All cookies accepted, page will reload");
+
+    // ADD THIS LINE:
+    cleanup(); // Clean up memory
+   
 }
 
 
@@ -4705,6 +4740,9 @@ function rejectAllCookies() {
     disableInteractionRestrictions();
     
     console.log("✅ All cookies rejected, page will reload");
+
+    // ADD THIS LINE:
+    cleanup(); // Clean up memory
 }
 
 
@@ -4853,6 +4891,10 @@ function saveCustomSettings() {
     disableInteractionRestrictions();
    
     console.log("✅ Custom settings saved and page will reload");
+
+    // ADD THIS LINE:
+    cleanup(); // Clean up memory
+   
 }
 
 
