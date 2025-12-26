@@ -81,12 +81,6 @@ window.COOKIE_SETTINGS = {
 
 
 
-
-
-
-
-
-
 (function () {
     'use strict';
 
@@ -487,6 +481,64 @@ window.COOKIE_SETTINGS = {
     }
     
     /* ===================== IMPLEMENT BLOCKING ===================== */
+    
+    // ============================================================================
+    // CRITICAL SECURITY: Block document.write and document.writeln
+    // Prevents trackers from bypassing blocking via inline script injection
+    // ============================================================================
+    if (!document.__cookieDocumentWritePatched) {
+        document.__cookieDocumentWritePatched = true;
+        
+        const originalWrite = document.write;
+        document.write = function(content) {
+            if (content && typeof content === 'string') {
+                // Check if content contains tracking scripts
+                const hasTrackingScript = 
+                    content.includes('<script') && (
+                        content.includes('google-analytics.com') ||
+                        content.includes('googletagmanager.com') ||
+                        content.includes('facebook.com') ||
+                        content.includes('connect.facebook.net') ||
+                        content.includes('doubleclick.net') ||
+                        content.includes('gtag(') ||
+                        content.includes('fbq(') ||
+                        content.includes('dataLayer.push')
+                    );
+                
+                if (hasTrackingScript) {
+                    if (DEBUG) console.log('🛡️ Blocked unsafe document.write with tracking script');
+                    return;
+                }
+            }
+            return originalWrite.apply(document, arguments);
+        };
+        
+        const originalWriteln = document.writeln;
+        document.writeln = function(content) {
+            if (content && typeof content === 'string') {
+                // Check if content contains tracking scripts
+                const hasTrackingScript = 
+                    content.includes('<script') && (
+                        content.includes('google-analytics.com') ||
+                        content.includes('googletagmanager.com') ||
+                        content.includes('facebook.com') ||
+                        content.includes('connect.facebook.net') ||
+                        content.includes('doubleclick.net') ||
+                        content.includes('gtag(') ||
+                        content.includes('fbq(') ||
+                        content.includes('dataLayer.push')
+                    );
+                
+                if (hasTrackingScript) {
+                    if (DEBUG) console.log('🛡️ Blocked unsafe document.writeln with tracking script');
+                    return;
+                }
+            }
+            return originalWriteln.apply(document, arguments);
+        };
+        
+        if (DEBUG) console.log("✅ document.write/document.writeln protection activated");
+    }
     
     // 1. Block script loading WITH SAFE GUARD
     if (!document.__cookieCreateElementPatched) {
@@ -899,6 +951,7 @@ window.COOKIE_SETTINGS = {
         console.log("• Production-safe blocking");
         console.log("• Enhanced Shopify support");
         console.log("• Safer cookie matching logic");
+        console.log("• document.write/document.writeln protection");
         console.log("========================================");
         console.log("⚠️  IMPORTANT: For production, use:");
         console.log("   window.COOKIE_SETTINGS = {");
@@ -909,8 +962,6 @@ window.COOKIE_SETTINGS = {
     }
     
 })();
-
-
 
 
 
